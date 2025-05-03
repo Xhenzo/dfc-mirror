@@ -141,6 +141,20 @@
             border-top: 3px solid #ff0000;
         }
         
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2c2c2c;
+            color: #ff0000;
+            padding: 15px;
+            border: 2px solid #ff0000;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .header {
@@ -246,6 +260,10 @@
         © <span id="year"></span> Deface Mirror Tool | For Educational Purposes Only
     </div>
     
+    <div id="notification" class="notification">
+        Data berhasil diupload ke Firebase!
+    </div>
+    
     <audio autoplay loop id="bgMusic">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" type="audio/mpeg">
         Browser Anda tidak mendukung elemen audio.
@@ -254,7 +272,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script>
-        // Firebase configuration (replace with your actual config)
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDmiB_f_30zRIC6Zb3KCEYYZEE23XdSngY",
             authDomain: "dfc-miror.firebaseapp.com",
@@ -264,9 +282,41 @@
             appId: "1:137570586008:web:8fb9af57bc1b0711f86fed"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Validate Firebase configuration
+        function validateFirebaseConfig(config) {
+            const requiredFields = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+            for (const field of requiredFields) {
+                if (!config[field]) {
+                    throw new Error(`Firebase config missing required field: ${field}`);
+                }
+            }
+            return true;
+        }
+
+        // Initialize Firebase with comprehensive error handling
+        let db;
+        try {
+            validateFirebaseConfig(firebaseConfig);
+            const app = firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore(app);
+            console.log('Firebase initialized successfully');
+
+            // Test Firestore write access
+            db.collection('test').doc('connection-test').set({
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                test: true
+            }).then(() => {
+                console.log('Firestore write test successful');
+            }).catch(e => {
+                console.error('Firestore write test failed:', e);
+                showNotification('Gagal mengakses Firestore. Periksa aturan Firestore atau koneksi.', true);
+            });
+
+            db.enablePersistence().catch(e => console.warn('Firestore persistence failed:', e));
+        } catch (e) {
+            console.error('Firebase initialization failed:', e);
+            showNotification(`Gagal menginisialisasi Firebase: ${e.message}. Pastikan konfigurasi benar.`, true);
+        }
 
         // Set tahun di footer
         document.getElementById('year').textContent = new Date().getFullYear();
@@ -275,6 +325,7 @@
         async function getCountry() {
             try {
                 const response = await fetch('https://ipapi.co/json/');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 return data.country_name || 'Unknown';
             } catch (e) {
@@ -283,33 +334,87 @@
             }
         }
         
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.color = isError ? '#ff4444' : '#ff0000';
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 6000);
+        }
+        
         // Fungsi untuk memuat mirror
         async function loadMirror() {
             const url = document.getElementById('targetUrl').value;
             const name = document.getElementById('hackerName').value;
             
             if (!url) {
-                alert('Masukkan URL target terlebih dahulu!');
+                showNotification('Masukkan URL target terlebih dahulu!', true);
+                return;
+            }
+            
+            // Validasi URL
+            try {
+                new URL(url);
+            } catch (e) {
+                showNotification('URL tidak valid! Pastikan formatnya benar (contoh: https://example.com)', true);
+                return;
+            }
+            
+            if (!db) {
+                showNotification('Firebase tidak terinisialisasi. Periksa konfigurasi Firebase di konsol.', true);
                 return;
             }
             
             try {
                 const country = await getCountry();
-                const timestamp = new Date().toLocaleString('id-ID');
+                const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+                
+                // Log data sebelum menyimpan
+                console.log('Attempting to save to Firebase:', {
+                    url,
+                    hackerName: name || 'Anonymous',
+                    timestamp,
+                    country
+                });
                 
                 // Simpan ke Firebase
-                await db.collection('defaces').add({
+                const docRef = await db.collection('defaces').add({
                     url: url,
                     hackerName: name || 'Anonymous',
                     timestamp: timestamp,
-                    country: country
+                    country: country,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+                
+                console.log('Document written with ID:', docRef.id);
+                
+                // Tampilkan notifikasi sukses
+                showNotification('Data berhasil diupload ke Firebase!');
                 
                 // Tampilkan URL di iframe
                 document.getElementById('mirrorFrame').src = url;
             } catch (e) {
-                console.error('Error saving to Firebase:', e);
-                alert('Gagal menyimpan data. Cek koneksi atau konfigurasi Firebase.');
+                console.error('Detailed Firebase error:', {
+                    message: e.message,
+                    code: e.code,
+                    stack: e.stack
+                });
+                let errorMessage = 'Gagal menyimpan data ke Firebase. ';
+                if (e.code === 'permission-denied') {
+                    errorMessage += 'Izin ditolak. Pastikan aturan Firestore mengizinkan penulisan ke koleksi "defaces".';
+                } else if (e.code === 'unavailable') {
+                    errorMessage += 'Firebase tidak tersedia. Periksa koneksi internet atau status layanan Firebase.';
+                } else if (e.code === 'invalid-argument') {
+                    errorMessage += 'Data tidak valid. Pastikan semua field terisi dengan benar.';
+                } else if (e.code === 'not-found') {
+                    errorMessage += 'Koleksi atau dokumen tidak ditemukan. Periksa konfigurasi Firestore.';
+                } else {
+                    errorMessage += `Kesalahan: ${e.message}. Buka konsol browser untuk detail.`;
+                }
+                showNotification(errorMessage, true);
             }
         }
         
