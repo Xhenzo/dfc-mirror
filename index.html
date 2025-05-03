@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deface Mirror</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Playfair+Display:wght@400;700&display=swap');
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ff0000;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            padding: 30px;
+            background: #2c2c2c;
+            text-align: center;
+            border-bottom: 3px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .logo {
+            max-width: 180px;
+            height: auto;
+            filter: drop-shadow(0 0 8px #ff0000);
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-shadow: 0 0 12px #ff0000;
+            letter-spacing: 3px;
+            font-size: 32px;
+            margin: 10px 0;
+        }
+        
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        
+        .input-form {
+            background: #2c2c2c;
+            padding: 25px;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff0000;
+            font-weight: 500;
+            font-size: 18px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            font-family: 'Roboto Mono', monospace;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 12px 30px;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+        
+        button:hover {
+            background: #cc0000;
+            box-shadow: 0 0 20px #ff0000;
+        }
+        
+        .mirror-frame {
+            border: 3px solid #ff0000;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+            margin: 30px 0;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            background-color: white;
+            border-radius: 6px;
+        }
+        
+        .nav-link {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .nav-link a {
+            color: #ff0000;
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+        
+        .nav-link a:hover {
+            color: #cc0000;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            background: #2c2c2c;
+            text-align: center;
+            font-size: 14px;
+            border-top: 3px solid #ff0000;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .input-form {
+                padding: 15px;
+            }
+            
+            label {
+                font-size: 16px;
+            }
+            
+            input {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            
+            .mirror-frame {
+                padding: 10px;
+            }
+            
+            iframe {
+                height: 400px;
+            }
+            
+            .nav-link a {
+                font-size: 16px;
+            }
+            
+            .footer {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .input-form {
+                grid-column: 1 / 2;
+            }
+            
+            .mirror-frame {
+                grid-column: 2 / 3;
+            }
+            
+            .nav-link {
+                grid-column: 1 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.ibb.co.com/qLZ7W9MT/Picsart-25-04-18-21-54-28-031.png" alt="Hacker Logo" class="logo">
+        <h1>DEFACE MIRROR TOOL</h1>
+    </div>
+    
+    <div class="container">
+        <div class="input-form">
+            <div class="input-group">
+                <label for="targetUrl">URL Target Deface:</label>
+                <input type="text" id="targetUrl" placeholder="https://example.com">
+            </div>
+            
+            <div class="input-group">
+                <label for="hackerName">Nama You:</label>
+                <input type="text" id="hackerName" placeholder="Anonymous">
+            </div>
+            
+            <button onclick="loadMirror()">Upload URL Deface</button>
+        </div>
+        
+        <div class="mirror-frame">
+            <iframe id="mirrorFrame" src="about:blank"></iframe>
+        </div>
+        
+        <div class="nav-link">
+            <a href="results.html">Lihat Arsip Deface</a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © <span id="year"></span> Deface Mirror Tool | For Educational Purposes Only
+    </div>
+    
+    <audio autoplay loop id="bgMusic">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script>
+        // Firebase configuration (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmiB_f_30zRIC6Zb3KCEYYZEE23XdSngY",
+            authDomain: "dfc-miror.firebaseapp.com",
+            projectId: "dfc-miror",
+            storageBucket: "dfc-miror.firebasestorage.app",
+            messagingSenderId: "137570586008",
+            appId: "1:137570586008:web:8fb9af57bc1b0711f86fed"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Set tahun di footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Fungsi untuk mendapatkan negara dari IP
+        async function getCountry() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                return data.country_name || 'Unknown';
+            } catch (e) {
+                console.error('Failed to fetch country:', e);
+                return 'Unknown';
+            }
+        }
+        
+        // Fungsi untuk memuat mirror
+        async function loadMirror() {
+            const url = document.getElementById('targetUrl').value;
+            const name = document.getElementById('hackerName').value;
+            
+            if (!url) {
+                alert('Masukkan URL target terlebih dahulu!');
+                return;
+            }
+            
+            try {
+                const country = await getCountry();
+                const timestamp = new Date().toLocaleString('id-ID');
+                
+                // Simpan ke Firebase
+                await db.collection('defaces').add({
+                    url: url,
+                    hackerName: name || 'Anonymous',
+                    timestamp: timestamp,
+                    country: country
+                });
+                
+                // Tampilkan URL di iframe
+                document.getElementById('mirrorFrame').src = url;
+            } catch (e) {
+                console.error('Error saving to Firebase:', e);
+                alert('Gagal menyimpan data. Cek koneksi atau konfigurasi Firebase.');
+            }
+        }
+        
+        // Muat iframe kosong saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.3;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        });
+    </script>
+</body>
+</html>

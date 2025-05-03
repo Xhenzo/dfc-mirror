@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Deface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Playfair+Display:wght@400;700&display=swap');
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ff0000;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            padding: 30px;
+            background: #2c2c2c;
+            text-align: center;
+            border-bottom: 3px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .logo {
+            max-width: 180px;
+            height: auto;
+            filter: drop-shadow(0 0 8px #ff0000);
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-shadow: 0 0 12px #ff0000;
+            letter-spacing: 3px;
+            font-size: 32px;
+            margin: 10px 0;
+        }
+        
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        
+        .mirror-frame {
+            border: 3px solid #ff0000;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+            margin: 30px 0;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            background-color: white;
+            border-radius: 6px;
+        }
+        
+        .deface-results {
+            background: #000;
+            padding: 25px;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            margin-top: 30px;
+        }
+        
+        .deface-results h2 {
+            color: #ff0000;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 8px #ff0000;
+        }
+        
+        .deface-results ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .deface-results li {
+            padding: 15px;
+            border-bottom: 1px solid #ff0000;
+            color: #ff0000;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .deface-results li:hover {
+            background: #1a1a1a;
+        }
+        
+        .nav-link {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .nav-link a {
+            color: #ff0000;
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+        
+        .nav-link a:hover {
+            color: #cc0000;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            background: #2c2c2c;
+            text-align: center;
+            font-size: 14px;
+            border-top: 3px solid #ff0000;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .mirror-frame {
+                padding: 10px;
+            }
+            
+            iframe {
+                height: 400px;
+            }
+            
+            .deface-results {
+                padding: 15px;
+            }
+            
+            .deface-results h2 {
+                font-size: 20px;
+            }
+            
+            .deface-results li {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            .nav-link a {
+                font-size: 16px;
+            }
+            
+            .footer {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .deface-results {
+                grid-column: 1 / 2;
+            }
+            
+            .mirror-frame {
+                grid-column: 2 / 3;
+            }
+            
+            .nav-link {
+                grid-column: 1 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.ibb.co.com/qLZ7W9MT/Picsart-25-04-18-21-54-28-031.png" alt="Hacker Logo" class="logo">
+        <h1>ARSIP DEFACE</h1>
+    </div>
+    
+    <div class="container">
+        <div class="nav-link">
+            <a href="index.html">Kembali ke Upload</a>
+        </div>
+        
+        <div class="deface-results">
+            <h2>Arsip Deface</h2>
+            <ul id="defaceList"></ul>
+        </div>
+        
+        <div class="mirror-frame">
+            <iframe id="mirrorFrame" src="about:blank"></iframe>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © <span id="year"></span> Deface Mirror Tool | For Educational Purposes Only
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script>
+        // Firebase configuration (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Set tahun di footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Fungsi untuk memuat hasil deface dari Firebase
+        async function loadDefaceResults() {
+            const defaceList = document.getElementById('defaceList');
+            const mirrorFrame = document.getElementById('mirrorFrame');
+            defaceList.innerHTML = '';
+            
+            try {
+                const snapshot = await db.collection('defaces').orderBy('timestamp', 'desc').get();
+                if (snapshot.empty) {
+                    const li = document.createElement('li');
+                    li.textContent = 'Belum ada hasil deface.';
+                    defaceList.appendChild(li);
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.textContent = `URL: ${data.url} | Hacked by: ${data.hackerName} | Time: ${data.timestamp} | Country: ${data.country}`;
+                    li.onclick = () => {
+                        mirrorFrame.src = data.url;
+                    };
+                    defaceList.appendChild(li);
+                });
+                
+                // Load the first URL in the iframe by default
+                const firstDoc = snapshot.docs[0];
+                if (firstDoc) {
+                    mirrorFrame.src = firstDoc.data().url;
+                }
+            } catch (e) {
+                console.error('Error loading deface results:', e);
+                const li = document.createElement('li');
+                li.textContent = 'Gagal memuat hasil deface. Cek koneksi atau konfigurasi Firebase.';
+                defaceList.appendChild(li);
+            }
+        }
+        
+        // Muat hasil deface saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadDefaceResults);
+    </script>
+</body>
+</html>
